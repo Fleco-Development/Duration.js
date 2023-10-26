@@ -39,20 +39,18 @@ export class Duration {
 
 	}
 
-	public add(duration: string): Duration;
-	public add(duration: DurationOptions): Duration;
 	public add(duration: string | DurationOptions): Duration {
 
 		if (typeof duration === 'string') {
 
 			const dur = this.parseString(duration);
 
-			this.duration.add(dur);
+			this.duration = this.duration.add(dur);
 
 		}
 		else {
 
-			this.duration.add(duration);
+			this.duration = this.duration.add(duration);
 
 		}
 
