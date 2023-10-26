@@ -58,6 +58,25 @@ export class Duration {
 
 	}
 
+	public sub(duration: string | DurationOptions): Duration {
+
+		if (typeof duration === 'string') {
+
+			const dur = this.parseString(duration);
+
+			this.duration = this.duration.subtract(dur);
+
+		}
+		else {
+
+			this.duration = this.duration.subtract(duration);
+
+		}
+
+		return this;
+
+	}
+
 	private parseString(duration: string): Temporal.Duration {
 
 		const durations: DurationOptions = {};
