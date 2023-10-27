@@ -27,6 +27,16 @@ export interface DurationOptions {
 	nanoseconds?: number,
 }
 
+export enum DiscordTimestamp {
+	ShortTime = 't',
+	LongTime = 'T',
+	ShortDate = 'd',
+	LongDate = 'D',
+	ShortDateTime = 'f',
+	LongDateTime = 'F',
+	Relative = 'R',
+}
+
 export class Duration {
 
 	public duration: Temporal.Duration;
@@ -83,7 +93,15 @@ export class Duration {
 
 	}
 
-	public parseString(duration: string): Temporal.Duration {
+	public toDiscordTimestamp(type: DiscordTimestamp = DiscordTimestamp.ShortDateTime): string {
+
+		const end = Temporal.Now.instant().epochSeconds + this.duration.total({ unit: 'seconds', relativeTo: Temporal.Now.plainDateISO() });
+
+		return `<t:${end}:${type}>`;
+
+	}
+
+	private parseString(duration: string): Temporal.Duration {
 
 		const unitRegex = /([-+\d.]+)([a-zµμ]+)/g;
 
