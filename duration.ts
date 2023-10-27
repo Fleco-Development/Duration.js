@@ -10,6 +10,7 @@ const unitMap = {
 	'm': 'minutes',
 	'h': 'hours',
 	'd': 'days',
+	'w': 'weeks',
 	'mo': 'months',
 	'y': 'years',
 };
