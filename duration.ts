@@ -54,12 +54,12 @@ export class Duration {
 
 			const dur = this.parseString(duration);
 
-			this.duration = this.duration.add(dur);
+			this.duration = this.duration.add(dur, { relativeTo: Temporal.Now.plainDateISO() });
 
 		}
 		else {
 
-			this.duration = this.duration.add(duration);
+			this.duration = this.duration.add(duration, { relativeTo: Temporal.Now.plainDateISO() });
 
 		}
 
