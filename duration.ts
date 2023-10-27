@@ -1,7 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-const unitRegex = /([-+\d.]+)([a-zµμ]+)/g;
-
 const unitMap = {
 	'ns': 'nanoseconds',
 	'us': 'microseconds',
@@ -77,7 +75,17 @@ export class Duration {
 
 	}
 
-	private parseString(duration: string): Temporal.Duration {
+	public endDate(): Date {
+
+		const currentDate = Temporal.Now;
+
+		return new Date(currentDate.instant().epochMilliseconds + this.duration.total({ unit: 'milliseconds', relativeTo: currentDate.plainDateTimeISO() }));
+
+	}
+
+	public parseString(duration: string): Temporal.Duration {
+
+		const unitRegex = /([-+\d.]+)([a-zµμ]+)/g;
 
 		const durations: DurationOptions = {};
 
@@ -86,6 +94,8 @@ export class Duration {
 		if (!unitRegex.test(duration)) {
 			throw new Error(`invalid duration: ${duration}`);
 		}
+
+		unitRegex.lastIndex = 0;
 
 		while ((match = unitRegex.exec(duration)) !== null) {
 
