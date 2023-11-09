@@ -1,6 +1,6 @@
 {
   "name": "@fleco/duration",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Fork of duration-js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/Fleco-Development/Duration.js/issues"
   },
-  "homepage": "https://github.com/Fleco-Development/Duration.js#readme",
+  "homepage": "https://www.fleco.cloud/packages/duration/get-started/",
   "dependencies": {
     "@js-temporal/polyfill": "^0.4.4"
   },

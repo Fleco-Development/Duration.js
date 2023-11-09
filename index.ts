@@ -1,3 +1,3 @@
-import { Duration, DiscordTimestamp, DurationOptions } from './duration.js';
+import { Duration, DiscordTimestamp, DurationOptions, TemporalDuration, RelativeDurationOptions } from './duration.js';
 
-export { Duration, DiscordTimestamp, DurationOptions };
+export { Duration, DiscordTimestamp, DurationOptions, TemporalDuration, RelativeDurationOptions };
