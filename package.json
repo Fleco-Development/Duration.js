@@ -1,6 +1,6 @@
 {
   "name": "@fleco/duration",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Fork of duration-js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
