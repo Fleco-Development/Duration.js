@@ -99,10 +99,24 @@ export class Duration {
 
 	/**
 	 * @param duration - Starting duration
+	 * @param options - Additional Options
 	 */
-	constructor(duration: string) {
+	constructor(duration: string | TemporalDuration, options?: DurationOptions) {
 
-		this.duration = this.parseString(duration);
+		if (typeof duration === 'string') {
+
+			this.duration = this.parseString(duration);
+
+		}
+		else {
+
+			this.duration = Temporal.Duration.from(duration);
+
+		}
+
+		const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
+
+		this.duration = this.duration.round({ largestUnit: 'years', relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 	}
 
@@ -115,22 +129,23 @@ export class Duration {
 	 */
 	public add(duration: string | TemporalDuration, options?: DurationOptions): Duration {
 
+		const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
+
 		if (typeof duration === 'string') {
 
 			const dur = this.parseString(duration);
 
-			const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
 
 			this.duration = this.duration.add(dur, { relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 		}
 		else {
 
-			const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
-
 			this.duration = this.duration.add(duration, { relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 		}
+
+		this.duration = this.duration.round({ largestUnit: 'years', relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 		return this;
 
@@ -145,22 +160,23 @@ export class Duration {
 	 */
 	public sub(duration: string | TemporalDuration, options?: DurationOptions): Duration {
 
+		const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
+
 		if (typeof duration === 'string') {
 
 			const dur = this.parseString(duration);
 
-			const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
 
 			this.duration = this.duration.subtract(dur, { relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 		}
 		else {
 
-			const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
-
 			this.duration = this.duration.subtract(duration, { relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 		}
+
+		this.duration = this.duration.round({ largestUnit: 'years', relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 		return this;
 
@@ -169,13 +185,58 @@ export class Duration {
 	/**
 	 * Outputs the end date of the duration
 	 * @see {@link https://www.fleco.cloud/packages/duration/classes/duration/#endDate | Duration#endDate} for documentation
+	 * @param options - Additional Options
 	 * @returns Date
 	 */
-	public endDate(): Date {
+	public endDate(options?: DurationOptions): Date {
+
+		const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
 
 		const currentDate = Temporal.Now;
 
-		return new Date(currentDate.instant().epochMilliseconds + this.duration.total({ unit: 'milliseconds', relativeTo: currentDate.plainDateTimeISO() }));
+		return new Date(currentDate.instant().epochMilliseconds + this.duration.total({ unit: 'milliseconds', relativeTo: relative ?? currentDate.plainDateTimeISO() }));
+
+	}
+
+	/**
+	 * Shows the current duration as a string
+	 * @see {@link https://www.fleco.cloud/packages/duration/classes/duration/#toString | Duration#toString} for documentation
+	 * @example
+	 * ```
+	 * const duration = new Duration({ milliseconds: 12389348 });
+	 *
+	 * console.log(duration.toString());
+	 *
+	 * Output:
+	 *
+	 * "3 hours 26 minutes 29 seconds"
+	 * ```
+	 */
+	public toString(): string {
+
+		let str = '';
+
+		if (this.duration.years > 0) {
+			str += `${this.duration.years} ${this.duration.years > 1 ? 'years' : 'years'} `;
+		}
+
+		if (this.duration.days > 0) {
+			str += `${this.duration.days} ${this.duration.days > 1 ? 'days' : 'day'} `;
+		}
+
+		if (this.duration.hours > 0) {
+			str += `${this.duration.hours} ${this.duration.hours > 1 ? 'hours' : 'hour'} `;
+		}
+
+		if (this.duration.minutes > 0) {
+			str += `${this.duration.minutes} ${this.duration.minutes > 1 ? 'minutes' : 'minute'} `;
+		}
+
+		if (this.duration.seconds > 0) {
+			str += `${this.duration.seconds} ${this.duration.seconds > 1 ? 'seconds' : 'second'} `;
+		}
+
+		return str;
 
 	}
 
@@ -183,10 +244,13 @@ export class Duration {
 	 * Outputs a timestamp string for Discord.
 	 * @see {@link https://www.fleco.cloud/packages/duration/classes/duration/#toDiscordTimestamp | Duration#toDiscordTimestamp} for documentation
 	 * @param [type=DiscordTimestamp.ShortDateTime] - Type of timestamp
+	 * @param options - Additional Options
 	 */
-	public toDiscordTimestamp(type: DiscordTimestamp = DiscordTimestamp.ShortDateTime): string {
+	public toDiscordTimestamp(type: DiscordTimestamp = DiscordTimestamp.ShortDateTime, options?: DurationOptions): string {
 
-		const end = Temporal.Now.instant().epochSeconds + this.duration.total({ unit: 'seconds', relativeTo: Temporal.Now.plainDateISO() });
+		const relative = options?.relativeTo?.date.toTemporalInstant().toString({ timeZone: options.relativeTo.timeZone ?? 'UTC' });
+
+		const end = Temporal.Now.instant().epochSeconds + this.duration.total({ unit: 'seconds', relativeTo: relative ?? Temporal.Now.plainDateISO() });
 
 		return `<t:${end}:${type}>`;
 
